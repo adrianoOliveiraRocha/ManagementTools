@@ -1,0 +1,392 @@
+{% extends 'base.html' %}
+{% load cj_extras %}
+
+{% block title %}Diário de Caixa{% endblock %}
+
+{% block css-extra %}
+<style type="text/css" class="init"></style>
+{% endblock %}
+
+{% block js-extra %}
+<script type="text/javascript" language="javascript" class="init">
+  $(document).ready(function() {
+    $('#example').DataTable({
+      "language": {
+            "lengthMenu": "Exibindo _MENU_ registros po página",
+            "zeroRecords": "Nenhum registro encontrado - desculpe",
+            "info": "Exibindo a página _PAGE_ de _PAGES_",
+            "infoEmpty": "Sem registros disponíveis",
+            "infoFiltered": "(filtered from _MAX_ total records)"
+        },
+        "scrollX": true
+
+    });
+  } );
+
+
+</script>
+{% endblock %}
+
+{% block subcontent1 %}
+
+<div class="container-fluid" style="margin-top: 2%">
+       
+  <div class="container-fluid">     
+    <div class="row">
+      <div class="col-sm-3">
+
+        <ul class="nav">
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
+            href="{% url 'cashjournal:index' %}">
+            Início
+            </a>
+          </li>
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
+            data-toggle="modal" data-target="#newentrie">Nova Entrada</a>
+          </li>
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
+            data-toggle="modal" data-target="#newexit">Nova Saída</a>
+          </li>
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
+            data-toggle="modal" data-target="#searchlaunch">
+            Pesquisa
+            </a>
+          </li>
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
+            data-toggle="modal" data-target="#gerarrelatorio">
+            Gerar Relatório
+            </a>
+          </li>
+        </ul>
+
+      </div>
+      <div class="col-sm-9" id="central-content">
+        
+        <div id="msg-central">
+          
+          <div class="panel panel-default">
+            <div class="panel-body"><h3>Diário de Caixa</h3></div>
+          
+            <div class="container" style="width: 100%">
+              {% if messages %}
+                {% for message in messages %}
+                    <div class="well well-lg">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- datatable -->
+            <div class="panel-body">
+              <table id="example" class="display" cellspacing="0" 
+                    width="100%">
+                <thead>
+                  <tr>
+                    <th>Descrição</th>
+                    <th>Data</th>
+                    <th>Valor</th>
+                    <th>Tipo</th>
+                  </tr>
+                </thead>
+
+                <tfoot>
+                  <tr>
+                    <th>Descrição</th>
+                    <th>Data</th>
+                    <th>Valor</th>
+                    <th>Tipo</th>
+                  </tr>
+                </tfoot>
+
+                <tbody>
+
+                  {% for launch in launches %}
+                  <tr>
+                    <td style="text-align: center;" 
+                    id="{{launch.id}}" 
+                    onclick='edit_launch(this.id);'>
+                      <a href="#" 
+                      title="Click aqui para editar">
+                      {{ launch.description }}
+                      </a>
+                    </td>
+                    <td>{{ launch.date }}</td>
+                    <td>{{ launch.value }}</td>
+                    <td>{% type_test launch %}</td>
+                  </tr>
+                  {% endfor %}
+                  
+                </tbody>
+              </table>
+            </div>
+            <!-- fim datatable -->            
+
+          </div>
+
+          <div class="well well-lg">
+
+            {% if gain > 0 %}
+              Lucro: R${{ gain }}
+            {% elif gain < 0 %}
+              Prejuízo: R${{ gain }}
+
+            {% endif %}
+          </div>
+
+        </div>
+
+        <!-- Modal New Entrie-->
+        <div id="newentrie" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Nova Entrada</h4>
+              </div>
+              <div class="modal-body">
+                
+         
+                {% if entrieForm.errors %}
+                  {{ entrieForm.errors }}
+                {% else %}
+                  {{ msg }}
+                {% endif %}
+
+                <form method="post" 
+                action="{% url 'cashjournal:new_entrie' %}">
+                  {% csrf_token %}
+                  <table class="table">
+                    <tr>
+                      <td>
+                        <label for="{{ entrieForm.description.auto_id }}">
+                          {{ entrieForm.description.label }}
+                        </label>
+                      </td>
+                      <td>{{ entrieForm.description }}</td>
+                      <td>{{ entrieForm.description.errors }}</td>
+                      
+                    </tr>
+                    <tr>
+                      <td>
+                        <label for="{{ entrieForm.value.auto_id }}">
+                          {{ entrieForm.value.label }}
+                        </label>
+                      </td>
+                      <td>{{ entrieForm.value }}</td>
+                      <td>{{ entrieForm.value.errors }}</td>
+                      
+                    </tr>
+                    <tr>
+                      <td>
+                        <label for="{{ entrieForm.en_type.auto_id }}">
+                          {{ entrieForm.en_type.label }}
+                        </label>
+                      </td>
+                      <td>{{ entrieForm.en_type }}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="3"><input type="submit" value="Enviar"></td>
+                    </tr>
+                  </table>
+                </form>
+
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- End Modal New Entrie-->
+
+
+        <!-- Modal New Exit-->
+        <div id="newexit" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Nova Saída</h4>
+              </div>
+              <div class="modal-body">
+                
+         
+                {% if exitForm.errors %}
+                  {{ exitForm.errors }}
+                {% else %}
+                  {{ msg }}
+                {% endif %}
+
+                <form method="post" 
+                action="{% url 'cashjournal:new_exit' %}">
+                  {% csrf_token %}
+                  <table class="table">
+                    <tr>
+                      <td>
+                        <label for="{{ exitForm.description.auto_id }}">
+                          {{ exitForm.description.label }}
+                        </label>
+                      </td>
+                      <td>{{ exitForm.description }}</td>
+                      <td>{{ exitForm.description.errors }}</td>
+                      
+                    </tr>
+                    <tr>
+                      <td>
+                        <label for="{{ exitForm.value.auto_id }}">
+                          {{ exitForm.value.label }}
+                        </label>
+                      </td>
+                      <td>{{ exitForm.value }}</td>
+                      <td>{{ exitForm.value.errors }}</td>
+                      
+                    </tr>
+                    <tr>
+                      <td>
+                        <label for="{{ exitForm.ex_type.auto_id }}">
+                          {{ exitForm.ex_type.label }}
+                        </label>
+                      </td>
+                      <td>{{ exitForm.ex_type }}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="3"><input type="submit" value="Enviar"></td>
+                    </tr>
+                  </table>
+                </form>
+
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- End Modal New Exit-->
+
+
+        <!-- Modal Gerar Relatório-->
+        <div id="gerarrelatorio" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" 
+                data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Gerar Relatório</h4>
+              </div>
+
+              <div class="modal-body">
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Início</th>
+                        <th>Fim</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input id="inicio"
+                        onkeyup="get_date(this);" 
+                          placeholder="DD/MM/AAAA"></td>
+                        <td><input id="fim" 
+                          onkeyup="get_date(this);"
+                          placeholder="DD/MM/AAAA"></td>
+                      </tr>
+                      <tr>
+                        <td><input type="button" 
+                          onclick="generate_report();" data-dismiss="modal"
+                          value="Gerar Relatório"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                
+              </div>
+              
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" 
+                data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- Fim Modal Gerar Relatório-->
+
+        <!-- Modal Pesquisa-->
+        <div id="searchlaunch" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" 
+                data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Pesquisa</h4>
+              </div>
+
+              <div class="modal-body">
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Início</th>
+                        <th>Fim</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input id="iniciosearch"
+                        onkeyup="get_date(this);" 
+                          placeholder="DD/MM/AAAA"></td>
+                        <td><input id="fimsearch" 
+                          onkeyup="get_date(this);"
+                          placeholder="DD/MM/AAAA"></td>
+                      </tr>
+                      <tr>
+                        <td><input type="button" 
+                          onclick="search_launch();" data-dismiss="modal"
+                          value="Pesquisa"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                
+              </div>
+              
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" 
+                data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- Fim Modal Pesquisa-->
+
+
+      </div>
+
+      </div>
+
+    </div>
+  </div>
+   
+</div>
+
+
+{% endblock %}
+

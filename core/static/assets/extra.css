@@ -1,0 +1,16 @@
+html {
+	margin: 1%;
+}
+
+.margin-top {
+    margin-top: 2em;
+}
+
+#msg-central{
+	text-align: justify-all;
+	font-size: 130%;
+}
+
+.mybtn{
+	margin: 3%;
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<title>{% block title %} Sistema de Gestão {% endblock %}</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link rel="stylesheet"
+	href="{% static 'assets/bootstrap.min.css' %}">
+	<script src="{% static 'assets/jquery.min.js' %}"></script>
+	<script src="{% static 'assets/bootstrap.min.js' %}"></script>
+	<script type="text/javascript" 
+	src="{% static 'assets/extra.js' %}"></script>
+
+	<!-- DataTable -->
+	<link rel="stylesheet" 
+	href="{% static 'assets/media/css/jquery.dataTables.css' %}">
+	
+	<style type="text/css" class="init"></style>
+	<script src="{% static 'assets/media/js/jquery.js' %}"></script>
+	
+	<script src="{% static 'assets/media/js/jquery.dataTables.js' %}"></script>
+	
+
+	{% block css-extra %}{% endblock %}
+	{% block js-extra %}{% endblock %}
+</head>
+<body>
+	{% block container %}
+	<div class="panel-group">
+		{% block nav %}
+		<div class="panel panel-default">
+			<div class="panel-body">
+				
+				 <nav class="navbar navbar-inverse">
+				  <div class="container-fluid">
+				    <div class="navbar-header">
+				    	<a class="navbar-brand" href="#">
+				      	Sistema de Gestão
+				  		</a>
+				    </div>
+				    <ul class="nav navbar-nav">
+				      <li>
+				      	<a href="/">
+				      	Home</a>
+				      </li>
+				      <li>
+				      	<a href="{% url 'cashjournal:index' %}">
+				      		Diário de Caixa
+				      	</a>
+				      </li>
+				      <li>
+				      	<a href="#">Tributos</a>
+				      </li>
+				      
+				    </ul>
+				    
+				    <ul class="nav navbar-nav navbar-right">
+						<li>
+						{% if user.is_authenticated %}
+						  <a href="{% url 'logout' %}" title="Logado como {{user}}">Sair</a>
+						{% else %}
+						<a href="{% url 'login' %}" style="float: left"
+						  title="Click aqui para logar-se">Entrar</a>
+
+						<a href="{% url 'accounts:register' %}" style="float: right"
+						  title="Click aqui para registrar-se">Registrar-se</a>
+						{% endif %}
+		              </li>
+		              
+					</ul>
+
+				  </div>
+				</nav> 
+
+			</div>
+		</div>	
+		{% endblock %} <!-- fim do block nav --> 
+
+		{% block subcontent1 %}
+		<div class="panel-body">
+			<div class="container-fluid">
+
+			  <div class="row">
+			    <div class="col-sm-3 col-md-6 col-lg-4" style="background-color:yellow;">
+			      <!-- menu lateral -->
+			      <div class="container">
+			        {% block menu-lateral %}
+			        	Manu lateral base.html
+			        {% endblock %}
+			      </div>
+			      <!-- fim menu lateral -->
+
+			      <!-- centro -->
+			      </div>  <div class="col-sm-9 col-md-6 col-lg-8" style="background-color:blue;">
+			        {% block central %}
+			        	Conteudo central base.html
+			        {% endblock %}
+			      </div>
+			    <!-- fim centro -->
+			  </div>
+			</div> 
+		</div>
+		{% endblock %} <!-- fim do subcontent1 -->
+
+		{% block footer %}
+		<div class="panel-body">
+			<div class="panel-footer">Panel Footer</div>
+		</div>
+		{% endblock %} <!-- fim do footer -->
+
+	</div>
+	{% endblock %} <!-- fim do block content -->
+	
+</body>
+</html>
