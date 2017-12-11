@@ -43,13 +43,14 @@ function generate_report() {
 		alert('Por favor! preencha a data de início e fim corretamente');
 	}
 	else{
-		var url = '/diariocaixa/generate_report/' + init + '/' + end;
+		var url = '/cashjournal/generate_report/' + init + '/' + end;
 		window.self.location.href = url;
 	}
 }
 
 
 function search_launch() {
+	
 	var init = document.getElementById('iniciosearch').value;
 	var end = document.getElementById('fimsearch').value;
 	
@@ -57,7 +58,7 @@ function search_launch() {
 		alert('Por favor! preencha a data de início e fim corretamente');
 	}
 	else{
-		var url = '/diariocaixa/search_launches/' + init + '/' + end;
+		var url = '/cashjournal/search_launches/' + init + '/' + end;
 		// window.self.location.href = url;
 
 		var containerResponse = document.getElementById("msg-central");

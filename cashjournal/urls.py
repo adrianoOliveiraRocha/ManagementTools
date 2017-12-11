@@ -15,4 +15,10 @@ urlpatterns = [
 		views.delete_entrie, name='delete_entrie'),
 	url(r'^delete_exit/(?P<launch_id>\d+)$',
 		views.delete_exit, name='delete_exit'),
+	url(r'^search_launches/(?P<day1>\d{2})/(?P<month1>\d{2})/(?P<year1>\d{4})'
+		'/(?P<day2>\d{2})/(?P<month2>\d{2})/(?P<year2>\d{4})/$',
+		views.search_launches, name='search_launches'),
+	url(r'^generate_report/(?P<day1>\d{2})/(?P<month1>\d{2})/(?P<year1>\d{4})'
+		'/(?P<day2>\d{2})/(?P<month2>\d{2})/(?P<year2>\d{4})/$',
+		views.generate_report, name='generate_report'),
 ]

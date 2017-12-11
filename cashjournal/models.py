@@ -28,6 +28,13 @@ class Launch(models.Model):
 		return Launch.objects.filter(user=user)
 
 	@staticmethod
+	def getLaunchesPeriod(request, init_date, end_date):
+		sql = """SELECT id, date, description, value, l_type 
+		FROM cashjournal_launch where date >= '{}' and  date <= '{}'
+		and user_id = {}""".format(init_date, end_date, request.user.id)
+		return Launch.objects.raw(sql)
+
+	@staticmethod
 	def statisticData(launches):
 		"""get infos in that launchs"""
 		n_entries = 0
@@ -41,11 +48,14 @@ class Launch(models.Model):
 			if launch.l_type == 'en':
 				n_entries = n_entries + 1
 				amount_entries = amount_entries + launch.value
+				list_entries.append(Entrie.getForLaunchId(launch.id))
 			else:
 				n_exits = n_exits + 1
 				amount_exits = amount_exits + launch.value
+				list_exits.append(Exit.getForLaunchId(launch.id))
 
-		return (n_entries, n_exits, amount_entries, amount_exits)
+		return (n_entries, n_exits, amount_entries,
+			amount_exits, list_entries, list_exits)
 
 	def editLaunch(data):
 		sql = """update cashjournal_launch set description = '{}', 
@@ -102,10 +112,24 @@ class Entrie(Launch):
 		else:
 			return True
 
-
+	@staticmethod
+	def enType(code):
+		if code == 'mo':
+			return 'Dinheiro'
+		elif code == 'ch':
+			return 'Cheque'
+		elif code == 'de':
+			return 'Débito'
+		elif code == 'cr':
+			return 'Crédito'
+		elif code == 'tr':
+			return 'Transferência'
+		elif code == 'dp':
+			return 'Depósito'
+		elif code == 'ot':
+			return 'Outro'
 
 	
-
 class Exit(Launch):
 	TYPE_EXIT = (
 		('pa', 'Pagamento'),
@@ -143,3 +167,9 @@ class Exit(Launch):
 		else:
 			return True
 	 
+	@staticmethod
+	def exType(code):
+		if code == 'pa':
+			return 'Pagamento'
+		elif code == 'cw':
+			return 'Retirada'
