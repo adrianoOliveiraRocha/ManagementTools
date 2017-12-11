@@ -68,6 +68,20 @@ class Launch(models.Model):
 			return True
 		except Exception as e:
 			return False
+
+	@staticmethod
+	def deleteLaunch(launch_id):
+		from django.db import connection
+		cursor = connection.cursor()
+		
+		sql = """delete from cashjournal_launch 
+		where id = {}""".format(launch_id)
+		
+		try:
+			cursor.execute(sql)
+			return True 
+		except Exception:
+			return False
 		
 
 class Entrie(Launch):
@@ -129,6 +143,20 @@ class Entrie(Launch):
 		elif code == 'ot':
 			return 'Outro'
 
+	@staticmethod
+	def deleteEntrie(launch_id):
+		from django.db import connection
+		cursor = connection.cursor()
+		
+		sql = """delete from cashjournal_entrie 
+		where launch_ptr_id = {}""".format(launch_id)
+
+		try:
+			cursor.execute(sql)
+			return True 
+		except Exception:
+			return False
+		
 	
 class Exit(Launch):
 	TYPE_EXIT = (
@@ -173,3 +201,19 @@ class Exit(Launch):
 			return 'Pagamento'
 		elif code == 'cw':
 			return 'Retirada'
+
+	@staticmethod
+	def deleteExit(launch_id):
+		from django.db import connection
+		cursor = connection.cursor()
+		
+		sql = """delete from cashjournal_exit 
+		where launch_ptr_id = {}""".format(launch_id)
+
+		try:
+			cursor.execute(sql)
+			return True 
+		except Exception:
+			return False
+
+			

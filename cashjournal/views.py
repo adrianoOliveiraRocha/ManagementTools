@@ -140,10 +140,32 @@ def run_edit_exit(request, launch_id):
 				return redirect('cashjournal:index')
 
 def delete_entrie(request, launch_id):
-	return HttpResponse('Calling delete_entrie')
+	if Entrie.deleteEntrie(launch_id):
+		if Launch.deleteLaunch(launch_id):
+			messages.add_message(request, messages.INFO,
+				"Entrada deletada com sucesso")
+		else:
+			messages.add_message(request, messages.INFO,
+				"Não foi possível deletar a entrada")
+	else:
+		messages.add_message(request, messages.INFO,
+			"Não foi possível deletar a entrada")
+
+	return redirect('cashjournal:index')
 
 def delete_exit(request, launch_id):
-	return HttpResponse('Calling delete_exit')
+	if Exit.deleteExit(launch_id):
+		if Launch.deleteLaunch(launch_id):
+			messages.add_message(request, messages.INFO,
+				"Saída deletada com sucesso")
+		else:
+			messages.add_message(request, messages.INFO,
+				"Não foi possível deletar a saída")
+	else:
+		messages.add_message(request, messages.INFO,
+			"Não foi possível deletar a saída")
+
+	return redirect('cashjournal:index')
 
 def search_launches(request, **kwargs):
 	# data for search in database
