@@ -198,6 +198,33 @@ def search_launches(request, **kwargs):
 
 	return render(request, 'cashjournal/search_launches.html', context)
 
+def search_date(request, **kwargs):
+	# data for search in database
+	date = kwargs['year'] + '-' + kwargs['month'] + '-' + kwargs['day']
+	
+	launches = Launch.getLaunchesDate(request, date)
+
+	(n_entries, n_exits, amount_entries, amount_exits,
+	 list_entries, list_exits) = Launch.statisticData(launches)
+
+	# data for showing
+	date = kwargs['day'] + '/' + kwargs['month'] + '/' + kwargs['year']
+
+	context = {
+		'launches': launches,
+		'date': date,
+		'amount_entries': amount_entries, 'amount_exits': amount_exits,	
+		'gain': (amount_entries - amount_exits)
+	}
+
+	if list_entries:
+		context.update({'list_entries': list_entries})
+		
+	if list_exits:
+		context.update({'list_exits': list_exits})
+
+	return render(request, 'cashjournal/search_date.html', context)
+
 def generate_report(request, **kwargs):
 	# data for search in database
 	init_date = kwargs['year1'] + '-' + kwargs['month1'] + '-' + kwargs['day1']

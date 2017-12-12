@@ -1,0 +1,6 @@
+Control of Payment of Tributes
+
+Porpuses:
+To allow that the user register the tributes that your company paid monthly
+To register the period that that the tribute will have that to be pay
+

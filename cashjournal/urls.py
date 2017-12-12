@@ -21,4 +21,6 @@ urlpatterns = [
 	url(r'^generate_report/(?P<day1>\d{2})/(?P<month1>\d{2})/(?P<year1>\d{4})'
 		'/(?P<day2>\d{2})/(?P<month2>\d{2})/(?P<year2>\d{4})/$',
 		views.generate_report, name='generate_report'),
+	url(r'^search_date/(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})/$',
+		views.search_date, name='search_date'),
 ]

@@ -52,8 +52,14 @@
           </li>
           <li class="nav-item" style="margin: 3%">
             <a type="button" class="btn btn-info btn-lg" 
+            data-toggle="modal" data-target="#searchday">
+            Pesquisa por Dia
+            </a>
+          </li>
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
             data-toggle="modal" data-target="#searchlaunch">
-            Pesquisa
+            Pesquisa por Período
             </a>
           </li>
           <li class="nav-item" style="margin: 3%">
@@ -330,7 +336,7 @@
         </div>
         <!-- Fim Modal Generate Report-->
 
-        <!-- Modal Search-->
+        <!-- Modal Search Period-->
         <div id="searchlaunch" class="modal fade" role="dialog">
           <div class="modal-dialog">
 
@@ -378,7 +384,54 @@
 
           </div>
         </div>
-        <!-- Fim Modal Pesquisa-->
+        <!-- Fim Modal Pesquisa Period-->
+
+
+        <!-- Modal Search Day -->
+        <div id="searchday" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" 
+                data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Pesquisa</h4>
+              </div>
+
+              <div class="modal-body">
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Data</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input id="date"
+                        onkeyup="get_date(this);" 
+                          placeholder="DD/MM/AAAA"></td>
+                      </tr>
+                      <tr>
+                        <td><input type="button" 
+                          onclick="search_date();" data-dismiss="modal"
+                          value="Pesquisa"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                
+              </div>
+              
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" 
+                data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- Fim Modal Pesquisa Day-->
 
 
       </div>

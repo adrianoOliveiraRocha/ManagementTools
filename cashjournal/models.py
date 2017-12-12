@@ -35,6 +35,13 @@ class Launch(models.Model):
 		return Launch.objects.raw(sql)
 
 	@staticmethod
+	def getLaunchesDate(request, date):
+		sql = """SELECT id, date, description, value, l_type 
+		FROM cashjournal_launch 
+		where date = '{}' and user_id = {}""".format(date, request.user.id)
+		return Launch.objects.raw(sql)
+
+	@staticmethod
 	def statisticData(launches):
 		"""get infos in that launchs"""
 		n_entries = 0

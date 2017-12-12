@@ -80,6 +80,34 @@ function search_launch() {
 }
 
 
+function search_date() {
+	var date = document.getElementById('date').value;
+	
+	if (date.length !== 10) {
+		alert('Por favor! preencha o campo data corretamente');
+	}
+	else{
+		var url = '/cashjournal/search_date/' + date;
+		// window.self.location.href = url;
+
+		var containerResponse = document.getElementById("msg-central");
+
+		//call ajax
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				    containerResponse.innerHTML = this.responseText;
+				}
+			else {
+				containerResponse.innerHTML = 'Carregando...';
+			}
+		};
+		xhttp.open("GET", url, true);
+		xhttp.send();
+	}
+}
+
+
 function edit_launch(launch_id) {
 	
 	var url = '/cashjournal/edit_launch/' + launch_id;  
