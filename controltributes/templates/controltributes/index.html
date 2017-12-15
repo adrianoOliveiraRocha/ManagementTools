@@ -235,14 +235,14 @@
                       </td>
                       <td>
                         
-                        <select>
+                        <select name="tribute" id="tribute">
+                          <option value="none"></option>
                           {% for choice in tribute_choices %}
                             <option value="{{ choice.id }}">
                               {{ choice.description }}
                             </option>
                           {% endfor %}
                         </select>
-
                       </td>
                     </tr>
 
@@ -252,11 +252,15 @@
                           Valor R$
                         </label>
                       </td>
-                      <td><input type="" name=""></td>
+                      <td>
+                        <input type="text" name="payment_value"
+                        id="payment_value" placeholder="Valor em Reais">
+                      </td>
                     </tr>
 
                     <tr>
-                      <td colspan="3"><input type="submit" value="Enviar"></td>
+                      <td colspan="3"><input type="submit" 
+                        value="Enviar""></td>
                     </tr>
 
                   </table>
@@ -273,10 +277,6 @@
           </div>
         </div>
         <!-- End Modal New Payment -->
-
-        
-
-
       </div>
 
       </div>

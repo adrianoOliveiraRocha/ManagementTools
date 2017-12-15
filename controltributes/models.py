@@ -27,7 +27,6 @@ class Tribute(models.Model):
 		""".format(user_id)
 		return Tribute.objects.raw(sql)
 
-	
 class Payment(models.Model):
 	from datetime import date
 	value = models.DecimalField('Valor R$', max_digits=5,

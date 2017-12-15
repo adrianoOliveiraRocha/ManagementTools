@@ -42,4 +42,19 @@ def new_tribute(request):
 
 @login_required
 def new_payment(request):
-	return HttpResponse('New Payment')
+	id_tribute = request.POST['tribute']
+	value = Utils.validate_value(request.POST['payment_value'])
+	if not value:
+		messages.add_message(request, messages.INFO, "Por favor,"
+			" preencha o campo valor corretamente")
+	else:
+		payment = Payment(
+			value=value,
+			tribute=Tribute.objects.get(id=id_tribute))
+		try:
+			payment.save()
+			messages.add_message(request, messages.INFO, "Pagamento"
+			" registrado com sucesso!")
+		except Exception as e:
+			raise e
+	return redirect('controltributes:index')
