@@ -48,4 +48,15 @@ class Payment(models.Model):
 			gain = gain + tribute.gain
 		return gain
 
+	@staticmethod
+	def getPayments(user_id):
+		tributes = Tribute.getTributes(user_id)
+		payments_list = []
+		for tribute in tributes:
+			payments = Payment.objects.filter(tribute=tribute)
+			for payment in payments:
+				payments_list.append((tribute.id, tribute.description, 
+					payment.date, payment.value, payment.id))
+		return payments_list
+		
 	
