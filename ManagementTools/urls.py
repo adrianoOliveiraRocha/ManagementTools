@@ -12,4 +12,6 @@ urlpatterns = [
 	url(r'^conta/', include('accounts.urls', namespace='accounts')),
 	url(r'^cashjournal/', include('cashjournal.urls',
 		namespace='cashjournal')),
+	url(r'^controltributes/', include('controltributes.urls',
+		namespace='controltributes')),
 ]

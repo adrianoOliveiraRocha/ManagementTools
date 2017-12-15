@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% load cj_extras %}
+
+{% block title %}Controle de Tributos{% endblock %}
+
+{% block css-extra %}
+<style type="text/css" class="init"></style>
+{% endblock %}
+
+{% block js-extra %}
+<script type="text/javascript" language="javascript" class="init">
+  $(document).ready(function() {
+    $('#example').DataTable({
+      "language": {
+            "lengthMenu": "Exibindo _MENU_ registros po página",
+            "zeroRecords": "Nenhum registro encontrado - desculpe",
+            "info": "Exibindo a página _PAGE_ de _PAGES_",
+            "infoEmpty": "Sem registros disponíveis",
+            "infoFiltered": "(filtered from _MAX_ total records)"
+        },
+        "scrollX": true
+
+    });
+  } );
+
+
+</script>
+{% endblock %}
+
+{% block subcontent1 %}
+
+<div class="container-fluid" style="margin-top: 2%">
+       
+  <div class="container-fluid">     
+    <div class="row">
+      <div class="col-sm-3">
+
+        <ul class="nav">
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
+            href="{% url 'controltributes:index' %}">
+            Início
+            </a>
+          </li>
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
+            data-toggle="modal" data-target="#newtribute">Novo Tributo</a>
+          </li>
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
+            data-toggle="modal" data-target="#newpayment">Novo Pagamento</a>
+          </li>
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
+            data-toggle="modal" data-target="#searchtribute">
+            Pesquisa por Período
+            </a>
+          </li>
+          <li class="nav-item" style="margin: 3%">
+            <a type="button" class="btn btn-info btn-lg" 
+            data-toggle="modal" data-target="#gerarrelatorio">
+            Relatório em PDF
+            </a>
+          </li>
+        </ul>
+
+      </div>
+      <div class="col-sm-9" id="central-content">
+        
+        <div id="msg-central">
+          
+          <div class="panel panel-default">
+            <div class="panel-body"><h3>Tributos</h3></div>
+          
+            <div class="container" style="width: 100%">
+              {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success alert-dismissable">
+                      <button type="button" class="close" data-dismiss="alert">&times;</button>
+                      {{ message }}
+                    </div>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <!-- datatable -->
+            <div class="panel-body">
+              <table id="example" class="display" cellspacing="0" 
+                    width="100%">
+                <thead>
+                  <tr>
+                    <th>Descrição</th>
+                    <th>Período</th>
+                    <th>Valor R$</th>
+                    <th>Data</th>
+                  </tr>
+                </thead>
+
+                <tfoot>
+                  <tr>
+                    <th>Descrição</th>
+                    <th>Período</th>
+                    <th>Valor R$</th>
+                    <th>Data</th>
+                  </tr>
+
+                </tfoot>
+
+                <tbody>
+
+                  {% for tribute in tributes %}
+                  <tr>
+                    <td style="text-align: center;">
+                      <a href="#" 
+                      title="Click aqui para editar">
+                      {{ tribute.description }}
+                      </a>
+                    </td>
+                    <td>{{ tribute.period }}</td>
+                    <td>56</td>
+                    <td>{{ tribute.date }}</td>
+                  </tr>
+                  {% endfor %}
+                                    
+                </tbody>
+              </table>
+            </div>
+            <!-- fim datatable -->            
+
+          </div>
+
+          <div class="well well-lg">
+
+            {% if gain > 0 %}
+              Lucro: R${{ gain }}
+            {% elif gain < 0 %}
+              Prejuízo: R${{ gain }}
+
+            {% endif %}
+          </div>
+
+        </div>
+
+        <!-- Modal New Tribute-->
+        <div id="newtribute" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Novo Tributo</h4>
+              </div>
+              <div class="modal-body">
+                
+         
+                {% if tributeForm.errors %}
+                  {{ tributeForm.errors }}
+                {% else %}
+                  {{ msg }}
+                {% endif %}
+
+                <form method="post" 
+                action="{% url 'controltributes:new_tribute' %}">
+                  {% csrf_token %}
+                  <table class="table">
+                    <tr>
+                      <td>
+                        <label for="{{ tributeForm.description.auto_id }}">
+                          {{ tributeForm.description.label }}
+                        </label>
+                      </td>
+                      <td>{{ tributeForm.description }}</td>
+                      <td>{{ tributeForm.description.errors }}</td>
+                      
+                    </tr>
+                    <tr>
+                      <td>
+                        <label for="{{ tributeForm.period.auto_id }}">
+                          {{ tributeForm.period.label }}
+                        </label>
+                      </td>
+                      <td>{{ tributeForm.period }}</td>
+                      <td>{{ tributeForm.period.errors }}</td>
+                      
+                    </tr>
+                    <tr>
+                      <td>
+                        <label for="{{ tributeForm.value.auto_id }}">
+                          {{ tributeForm.value.label }}
+                        </label>
+                      </td>
+                      <td>{{ tributeForm.value }}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="3"><input type="submit" value="Enviar"></td>
+                    </tr>
+                  </table>
+                </form>
+
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- End Modal New Tribute -->
+
+
+        <!-- Modal New Payment-->
+        <div id="newpayment" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Novo Pagamento</h4>
+              </div>
+              <div class="modal-body">
+                
+                <form method="post" 
+                action="{% url 'controltributes:new_payment' %}">
+                  {% csrf_token %}
+                  <table class="table">
+                    
+                    <tr>
+                      <td>
+                        <label for="tribute">
+                          tributo
+                        </label>
+                      </td>
+                      <td>
+                        
+                        <select>
+                          {% for choice in tribute_choices %}
+                            <option value="{{ choice.id }}">
+                              {{ choice.description }}
+                            </option>
+                          {% endfor %}
+                        </select>
+
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <label for="value">
+                          Valor R$
+                        </label>
+                      </td>
+                      <td><input type="" name=""></td>
+                    </tr>
+
+                    <tr>
+                      <td colspan="3"><input type="submit" value="Enviar"></td>
+                    </tr>
+
+                  </table>
+                </form>
+
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" 
+                data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- End Modal New Payment -->
+
+        
+
+
+      </div>
+
+      </div>
+
+    </div>
+  </div>
+   
+</div>
+
+
+{% endblock %}
+
