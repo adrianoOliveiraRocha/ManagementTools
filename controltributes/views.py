@@ -14,7 +14,7 @@ def index(request):
 	tributeForm = TributeForm()
 	tributes = Tribute.getTributes(request.user.id)
 	
-	payments_list = Payment.getPayments(request.user.id)
+	payments_list = Payment.getPaymentsForTributes(request.user.id)
 	for payment in payments_list:
 		print(payment)
 	

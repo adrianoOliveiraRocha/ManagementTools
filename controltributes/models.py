@@ -49,7 +49,7 @@ class Payment(models.Model):
 		return gain
 
 	@staticmethod
-	def getPayments(user_id):
+	def getPaymentsForTributes(user_id):
 		tributes = Tribute.getTributes(user_id)
 		payments_list = []
 		for tribute in tributes:
