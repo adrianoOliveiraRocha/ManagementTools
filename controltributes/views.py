@@ -87,7 +87,9 @@ def run_edit_tribute(request, tribute_id):
 
 	return redirect('controltributes:index')
 
-	
-
 def delete_tribute(request, tribute_id):
-	return HttpResponse(tribute_id)
+	tribute = Tribute.objects.get(id=tribute_id)
+	tribute.delete()
+	messages.add_message(request, messages.INFO, "Tributo"
+			" deletedo com sucesso!")
+	return redirect('controltributes:index')
