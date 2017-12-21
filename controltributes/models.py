@@ -51,6 +51,11 @@ class Tribute(models.Model):
 			print(e)
 			return False
 
+	@staticmethod
+	def getDescription(tribute_id):
+		tribute = Tribute.objects.get(id=tribute_id)
+		return tribute.description
+
 
 class Payment(models.Model):
 	from datetime import date
@@ -84,5 +89,15 @@ class Payment(models.Model):
 					payments_list.append((tribute.id, tribute.period, tribute.description, 
 						payment.date, payment.value, payment.id))
 		return payments_list
-		
+
+	@staticmethod
+	def getPaymentsRelateds(tribute_id):
+		payments = Payment.objects.filter(tribute_id=tribute_id)
+		tribute_description = Tribute.getDescription(tribute_id)
+		sum_payments = 0
+		for payment in payments:
+			sum_payments = sum_payments + payment.value
+		return payments, sum_payments, tribute_description
+	
+	
 	

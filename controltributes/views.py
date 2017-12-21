@@ -93,3 +93,14 @@ def delete_tribute(request, tribute_id):
 	messages.add_message(request, messages.INFO, "Tributo"
 			" deletedo com sucesso!")
 	return redirect('controltributes:index')
+
+def payments_relateds(request, tribute_id):
+	payments, sum_payments, tribute_description = Payment.getPaymentsRelateds(tribute_id)
+	
+	context = {
+		'payments': payments,
+		'tribute_description': tribute_description,
+		'sum_payments': sum_payments
+	}
+	return render(request, 'controltributes/payments_relateds.html', context)
+

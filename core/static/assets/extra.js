@@ -144,3 +144,22 @@ function edit_tribute(tribute_id){
 	xhttp.open("GET", url, true);
 	xhttp.send();	
 }
+
+
+function paymentsRelateds(tribute_id){
+	var url = '/controltributes/payments_relateds/' + tribute_id;  
+
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			    document.getElementById("msg-central").innerHTML =
+			    this.responseText;
+			}
+		else{
+			document.getElementById("msg-central").innerHTML = 'Carregando...';
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
