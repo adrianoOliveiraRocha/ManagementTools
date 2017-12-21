@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block nav %}{% endblock %}
+
+{% block subcontent1 %}
+
+{% if form.errors %}
+  {{ form.errors }}
+{% endif %}
+
+{{ msg }}
+
+<form method="post" 
+action="{% url 'controltributes:run_edit_tribute' tribute_id=tribute_id %}">
+  {% csrf_token %}
+  <table class="table" style="width: 50%; margin: auto;">
+    <tr>
+      <td>
+        <label for="{{ form.description.auto_id }}">
+          {{ form.description.label }}
+        </label>
+      </td>
+      <td>{{ form.description }}</td>
+      <td>{{ form.description.errors }}</td>
+      
+    </tr>
+    <tr>
+      <td>
+        <label for="{{ form.period.auto_id }}">
+          {{ form.period.label }}
+        </label>
+      </td>
+      <td>{{ form.period }}</td>
+      <td>{{ form.period.errors }}</td>
+      
+    </tr>
+    
+    <tr>
+      <td><input type="submit" value="Editar"></td>
+      <td><input type="button" 
+        onclick='window.self.location.href = 
+        "{% url 'controltributes:delete_tribute'  tribute_id=tribute_id %}";'
+       value="Excluir"></td>
+    </tr>
+  </table>
+</form>
+{% endblock %}
+
+{% block footer %}{% endblock %}

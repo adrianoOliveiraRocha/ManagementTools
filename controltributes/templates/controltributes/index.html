@@ -91,8 +91,7 @@
                   <tr>
                     <th>Descrição</th>
                     <th>Período</th>
-                    <th>Valor R$</th>
-                    <th>Data</th>
+                    <th></th>
                   </tr>
                 </thead>
 
@@ -100,8 +99,7 @@
                   <tr>
                     <th>Descrição</th>
                     <th>Período</th>
-                    <th>Valor R$</th>
-                    <th>Data</th>
+                    <th></th>
                   </tr>
 
                 </tfoot>
@@ -110,15 +108,21 @@
 
                   {% for tribute in tributes %}
                   <tr>
-                    <td style="text-align: center;">
+                    <td style="text-align: center;"
+                    id="{{tribute.id}}"
+                    onclick='edit_tribute(this.id);'>
                       <a href="#" 
-                      title="Click aqui para editar">
+                      title="Click para editar">
                       {{ tribute.description }}
                       </a>
                     </td>
                     <td>{{ tribute.period }}</td>
-                    <td>56</td>
-                    <td>{{ tribute.date }}</td>
+                    <td>
+                      <button type="button" class="btn btn-default" 
+                      title="Exibir pagamentos relacionados">
+                        Pagamentos
+                      </button>
+                  </td>
                   </tr>
                   {% endfor %}
                                     

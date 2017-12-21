@@ -27,6 +27,31 @@ class Tribute(models.Model):
 		""".format(user_id)
 		return Tribute.objects.raw(sql)
 
+	@staticmethod
+	def editTribute(data, tribute_id):
+		update = False
+		try:
+			tribute = Tribute.objects.get(id=tribute_id)
+			
+			if tribute.description != data['description']:
+				tribute.description = data['description']
+				update = True
+				
+			if tribute.period != data['period']:
+				tribute.period = data['period']
+				update = True
+			
+			if update:
+				tribute.save()
+				return "Tributo alterado com sucesso!"
+			else:
+				return "Nenhuma alteração foi detectada"
+
+		except Exception as e:
+			print(e)
+			return False
+
+
 class Payment(models.Model):
 	from datetime import date
 	value = models.DecimalField('Valor R$', max_digits=5,
@@ -50,13 +75,14 @@ class Payment(models.Model):
 
 	@staticmethod
 	def getPaymentsForTributes(user_id):
-		tributes = Tribute.getTributes(user_id)
+		tributes = Tribute.getTributes(user_id=user_id)
 		payments_list = []
 		for tribute in tributes:
-			payments = Payment.objects.filter(tribute=tribute)
-			for payment in payments:
-				payments_list.append((tribute.id, tribute.description, 
-					payment.date, payment.value, payment.id))
+			payments = Payment.objects.filter(tribute_id=tribute.id)
+			if payments:
+				for payment in payments:
+					payments_list.append((tribute.id, tribute.period, tribute.description, 
+						payment.date, payment.value, payment.id))
 		return payments_list
 		
 	

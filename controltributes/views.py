@@ -15,15 +15,14 @@ def index(request):
 	tributes = Tribute.getTributes(request.user.id)
 	
 	payments_list = Payment.getPaymentsForTributes(request.user.id)
-	for payment in payments_list:
-		print(payment)
-	
+		
 	tribute_choices = Tribute.getTributeChoices(request.user.id)
 	context = {
 		'tributeForm': tributeForm,
 		'tributes': tributes,
-		'tribute_choices': tribute_choices
-		}
+		'tribute_choices': tribute_choices,
+		'payments_list': payments_list
+	}
 	
 	return render(request, 'controltributes/index.html',
 		context)
@@ -63,3 +62,32 @@ def new_payment(request):
 		except Exception as e:
 			raise e
 	return redirect('controltributes:index')
+
+@login_required
+def edit_tribute(request, tribute_id):
+	tribute = Tribute.objects.get(id=tribute_id)
+	data = {'description': tribute.description, 'period': tribute.period}
+	form = TributeForm(initial=data)
+	context = {'tribute_id': tribute_id, 'form': form}
+	template_name = 'controltributes/edit_tribute.html'
+		
+	return render(request, 'controltributes/edit_tribute.html', context)
+
+def run_edit_tribute(request, tribute_id):
+	data = {'description': request.POST['description'],
+	'period': request.POST['period']}
+
+	result = Tribute.editTribute(data, tribute_id)
+
+	if not result:
+		messages.add_message(request, messages.INFO, "Erro"
+			" ao tentar editar o tributo!")
+	else:
+		messages.add_message(request, messages.INFO, result)
+
+	return redirect('controltributes:index')
+
+	
+
+def delete_tribute(request, tribute_id):
+	return HttpResponse(tribute_id)
