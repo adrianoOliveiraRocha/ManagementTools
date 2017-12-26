@@ -193,3 +193,16 @@ function search_for_period() {
 		xhttp.send();
 	}
 }
+
+function report_generator_ct() {
+	var init = document.getElementById('inicio').value;
+	var end = document.getElementById('fim').value;
+	
+	if (init.length !== 10 || end.length != 10) {
+		alert('Por favor! preencha a data de início e fim corretamente');
+	}
+	else{
+		var url = '/controltributes/report_generate/' + init + '/' + end;
+		window.self.location.href = url;
+	}
+}

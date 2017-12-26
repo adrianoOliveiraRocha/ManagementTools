@@ -58,7 +58,7 @@
           </li>
           <li class="nav-item" style="margin: 3%">
             <a type="button" class="btn btn-info btn-lg" 
-            data-toggle="modal" data-target="#gerarrelatorio">
+            data-toggle="modal" data-target="#reportgenerator">
             Relatório em PDF
             </a>
           </li>
@@ -334,6 +334,56 @@
           </div>
         </div>
         <!-- End Modal Search Period-->
+
+        <!-- Modal Report Generator-->
+        <div id="reportgenerator" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" 
+                data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Relatório em PDF</h4>
+              </div>
+
+              <div class="modal-body">
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Início</th>
+                        <th>Fim</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input id="inicio"
+                        onkeyup="get_date(this);" 
+                          placeholder="DD/MM/AAAA"></td>
+                        <td><input id="fim" 
+                          onkeyup="get_date(this);"
+                          placeholder="DD/MM/AAAA"></td>
+                      </tr>
+                      <tr>
+                        <td><input type="button" 
+                          onclick="report_generator_ct();" data-dismiss="modal"
+                          value=" Pesquisa"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                
+              </div>
+              
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" 
+                data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- End Modal Report Generator-->
 
 
       </div>

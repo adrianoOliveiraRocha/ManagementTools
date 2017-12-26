@@ -7,6 +7,12 @@ from . forms import TributeForm
 from core.utils import Utils
 from django.contrib import messages
 from django.contrib.sessions.backends.db import SessionStore
+from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer,
+	Table, TableStyle)
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.lib import colors
+from django.core.files.storage import FileSystemStorage
 
 @login_required
 def index(request):
@@ -109,7 +115,7 @@ def search_for_period(request, **kwargs):
 	init_date = kwargs['year1'] + '-' + kwargs['month1'] + '-' + kwargs['day1']
 	end_date = kwargs['year2'] + '-' + kwargs['month2'] + '-' + kwargs['day2']
 
-	list_payments_for_tributes, amount = Tribute.getTributesForPeriod(request.user.id, init_date, end_date)
+	list_payments_for_tributes, amount, _ = Tribute.getTributesForPeriod(request.user.id, init_date, end_date)
 
 	init_date = kwargs['day1'] + '/' + kwargs['month1'] + '/' + kwargs['year1']
 	end_date = kwargs['day2'] + '/' + kwargs['month2'] + '/' + kwargs['year2']
@@ -122,3 +128,66 @@ def search_for_period(request, **kwargs):
 
 	return render(request, 'controltributes/show_payments_for_tributes.html', context)
 	
+def report_generate(request, **kwargs):
+	# data for search in database
+	init_date = kwargs['year1'] + '-' + kwargs['month1'] + '-' + kwargs['day1']
+	end_date = kwargs['year2'] + '-' + kwargs['month2'] + '-' + kwargs['day2']
+
+	list_payments_for_tributes, amount, n_payments  = Tribute.getTributesForPeriod(request.user,
+		init_date, end_date)
+
+	# data for showing
+	init_date = kwargs['day1'] + '/' + kwargs['month1'] + '/' + kwargs['year1']
+	end_date = kwargs['day2'] + '/' + kwargs['month2'] + '/' + kwargs['year2']
+
+	doc = SimpleDocTemplate("/tmp/report.pdf")
+	Catalog = []
+	styles = getSampleStyleSheet()
+	style = styles["Normal"]
+
+	header = Paragraph("Relatório", styles['Heading1'])
+	Catalog.append(header)
+
+	txt_intro = """
+	Período Base {} à {}
+	""".format(init_date, end_date)
+	p = Paragraph(txt_intro, styles['Heading3'])
+	Catalog.append(p)
+	Catalog.append(Spacer(1, 1))
+
+	# Payments
+	txt_intro_payments = "Pagamentos"
+	p = Paragraph(txt_intro_payments, styles['Heading2'])
+	Catalog.append(p)
+	Catalog.append(Spacer(1, 0.2 * inch))
+
+	detail_payments = """ Durante esse período, foram registrados {} pagamentos
+	com um montante de R$ {}
+	""".format(n_payments, amount)
+	p = Paragraph(detail_payments, styles['Normal'])
+	Catalog.append(p)
+	Catalog.append(Spacer(1, 0.2 * inch))
+
+	headings = ('Descrição','Período de Pagamento', 'Data de Pagamento', 'Valor R$')
+	allpayments = [(payment[0], payment[1], Utils.reverse_date(payment[2]), payment[3]) for payment in list_payments_for_tributes]
+
+	t_payments = Table([headings] + allpayments)
+	t_payments.setStyle(TableStyle(
+			[
+				('GRID', (0,0), (-1,-1), 1, colors.blue),
+				('LINEBELOW', (0,0), (-1, 0), 1, colors.black),
+				('BACKGROUND', (0, 0), (-1, 0), colors.yellow),
+				('ALIGN', (1,1), (-1,-1), 'CENTER')
+			]
+		)
+	)
+
+	Catalog.append(t_payments)
+
+	doc.build(Catalog)
+	fs = FileSystemStorage("/tmp")
+	with fs.open("report.pdf") as pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		response['Content-Disposition'] = 'attachment; filename="relatorio.pdf"'
+	
+	return response

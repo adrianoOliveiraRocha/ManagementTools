@@ -61,14 +61,15 @@ class Tribute(models.Model):
 		tributes = Tribute.getTributes(user_id)
 		list_payments_for_tributes = []
 		amount = 0
+		n_payments = 0
 		for t in tributes:
 			payments = Payment.getPaymentsForPeriod(t.id, init_date, end_date)
 			for p in payments:
 				list_payments_for_tributes.append((t.description, t.period, p.date, p.value))
 				amount += p.value
+				n_payments += 1
 				
-		return list_payments_for_tributes, amount
-
+		return list_payments_for_tributes, amount, n_payments
 
 
 class Payment(models.Model):
