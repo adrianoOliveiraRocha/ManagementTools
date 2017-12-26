@@ -13,4 +13,7 @@ urlpatterns = [
 		views.delete_tribute, name='delete_tribute'),
 	url(r'^payments_relateds/(?P<tribute_id>\d+)$',
 		views.payments_relateds, name='payments_relateds'),
+	url(r'^search_for_period/(?P<day1>\d{2})/(?P<month1>\d{2})/(?P<year1>\d{4})'
+		'/(?P<day2>\d{2})/(?P<month2>\d{2})/(?P<year2>\d{4})/$',
+		views.search_for_period, name='search_for_period'),
 ]

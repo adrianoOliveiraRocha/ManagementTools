@@ -104,3 +104,21 @@ def payments_relateds(request, tribute_id):
 	}
 	return render(request, 'controltributes/payments_relateds.html', context)
 
+def search_for_period(request, **kwargs):
+	# data for search in database
+	init_date = kwargs['year1'] + '-' + kwargs['month1'] + '-' + kwargs['day1']
+	end_date = kwargs['year2'] + '-' + kwargs['month2'] + '-' + kwargs['day2']
+
+	list_payments_for_tributes, amount = Tribute.getTributesForPeriod(request.user.id, init_date, end_date)
+
+	init_date = kwargs['day1'] + '/' + kwargs['month1'] + '/' + kwargs['year1']
+	end_date = kwargs['day2'] + '/' + kwargs['month2'] + '/' + kwargs['year2']
+
+	context = {
+		'list_payments_for_tributes': list_payments_for_tributes,
+		'init_date': init_date, 'end_date': end_date,
+		'amount': amount
+		}
+
+	return render(request, 'controltributes/show_payments_for_tributes.html', context)
+	

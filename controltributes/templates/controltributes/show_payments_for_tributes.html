@@ -8,68 +8,75 @@
 <div class="panel panel-default" style="margin: 1%;">
 
 	<div class="panel-group">
-		
-		<!-- Entries -->
+		<div class="panel panel-default">
+		  	<div class="panel-heading">
+		  		<p style="text-align: center;">
+		  		Período: 
+		  		{{ init_date }} à {{ end_date }}</p>
+		  	</div>
+		    
+		</div>
+
+		<!-- Payments -->
 		<div class="panel panel-default">
 			<div class="jumbotron">
-			  <h3 style="text-align: center;">Pagamentos Relacionados 
-			  ao Tributo {{ tribute_description }}</h3>
+			  <h3 style="text-align: center;">Pagamentos</h3>
 			</div>
 			<div class="panel-body">
-				{% if payments %}
+				{% if list_payments_for_tributes %}
 				<div style="overflow: auto; width: 100%; height: 300px;">
 
 					<div class="panel-body">
 						<table class="table" width="100%">
 							<thead>
 							  <tr>
-							    <th>Data</th>
-							    <th>Valor R$</th>
+							    <th>Descrição</th>
+							    <th>Príodo de Pagamento</th>
+							    <th>Data de Pagamento</th>
+							    <th>Valor</th>
 							  </tr>
 							</thead>
 
 							<tfoot>
 							  <tr>
-							    <th>Valor R$</th>
-							    <th>Data</th>
+							    <th>Descrição</th>
+							    <th>Príodo de Pagamento</th>
+							    <th>Data de Pagamento</th>
+							    <th>Valor</th>
 							  </tr>
 							</tfoot>
 
 							<tbody>
 							
-								{% for payment in payments %}
+								{% for payment in list_payments_for_tributes %}
 									<tr>
-										<td>{{ payment.date }}</td>
-										<td>{{ payment.value }}</td>
+										<td>{{ payment.0 }}</td>
+										<td>{{ payment.1 }}</td>
+										<td>{{ payment.3 }}</td>
+										<td>{{ payment.2 }}}</td>
 									</tr>
 								{% endfor %}
 							  
 							</tbody>
 						</table>
 						<div class="alert alert-success">
-						  <strong>Montante R$</strong> {{ sum_payments }}
+						  <strong>Montante R$</strong> {{ amount }}
 						</div>
 					</div>
 				</div>
 				{% else %}
 					<div class="alert alert-warning">
-					  <strong>Aviso!</strong> Não existem pagamentos 
-					  relacionados à esse tributo.
+					  <strong>Aviso!</strong> Não existem informações 
+					  à serem exibidas.
 					</div>
 				{% endif %}
+
 			</div>
 		</div>
 		<!-- End Entries -->
-
 	</div>
 </div>
 
-<!-- <div class="panel panel-default" style="margin: 1%;">
-	<div class="panel panel-default">
-		Programmer Python
-	</div>
-</div>
- -->
 
 {% endblock %}
 

@@ -56,6 +56,20 @@ class Tribute(models.Model):
 		tribute = Tribute.objects.get(id=tribute_id)
 		return tribute.description
 
+	@staticmethod
+	def getTributesForPeriod(user_id, init_date, end_date):
+		tributes = Tribute.getTributes(user_id)
+		list_payments_for_tributes = []
+		amount = 0
+		for t in tributes:
+			payments = Payment.getPaymentsForPeriod(t.id, init_date, end_date)
+			for p in payments:
+				list_payments_for_tributes.append((t.description, t.period, p.date, p.value))
+				amount += p.value
+				
+		return list_payments_for_tributes, amount
+
+
 
 class Payment(models.Model):
 	from datetime import date
@@ -99,5 +113,11 @@ class Payment(models.Model):
 			sum_payments = sum_payments + payment.value
 		return payments, sum_payments, tribute_description
 	
-	
+	def getPaymentsForPeriod(tribute_id, init_date, end_date):
+		sql = """
+			SELECT * from controltributes_payment 
+			WHERE tribute_id = {}
+			AND date >= '{}' And date <= '{}';
+		""".format(tribute_id, init_date, end_date)
+		return Payment.objects.raw(sql)
 	
