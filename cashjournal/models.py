@@ -104,6 +104,7 @@ class Entrie(Launch):
 
 	en_type = models.CharField('Tipo', max_length=2,
 		choices=TYPE_ENTRIE)
+	
 
 	@staticmethod
 	def getForLaunchId(launch_id):
@@ -173,7 +174,7 @@ class Exit(Launch):
 
 	ex_type = models.CharField('Tipo', max_length=2,
 		choices=TYPE_EXIT)
-
+	
 	@staticmethod
 	def getForLaunchId(launch_id):
 		sql = """select * from cashjournal_exit 
@@ -222,5 +223,19 @@ class Exit(Launch):
 			return True 
 		except Exception:
 			return False
+
+	@staticmethod
+	def registerExit(data):
+		""" This method register the exit after payment to be realized """
+		try:
+			exit = Exit(description=data['description'], value=data['value'],
+			user=data['user'], l_type=data['l_type'], ex_type=data['ex_type'])
+			exit.save()
+			exit = Exit()
+			return True
+		except Exception as e:
+			print(e)
+			return False
+
 
 			

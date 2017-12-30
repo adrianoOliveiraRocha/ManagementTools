@@ -13,6 +13,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 from django.core.files.storage import FileSystemStorage
+from cashjournal.models import Exit
 
 @login_required
 def index(request):
@@ -58,13 +59,27 @@ def new_payment(request):
 		messages.add_message(request, messages.INFO, "Por favor,"
 			" preencha o campo valor corretamente")
 	else:
+		tribute = Tribute.objects.get(id=id_tribute)
 		payment = Payment(
 			value=value,
-			tribute=Tribute.objects.get(id=id_tribute))
+			tribute=tribute)
 		try:
 			payment.save()
-			messages.add_message(request, messages.INFO, "Pagamento"
-			" registrado com sucesso!")
+			# register cashjournal exit
+			data = {
+				'description': tribute.description,
+				'value': value,
+				'l_type': 'ex',
+				'user': request.user,
+				'ex_type': 'cw'  
+			}
+			msg = None
+			if Exit.registerExit(data):
+				msg = 'O pagamento foi realizado com sucesso!'
+			else:
+				msg = 'O pagamento foi realizado mas a saída não registrada!'				
+			messages.add_message(request, messages.INFO, msg)
+
 		except Exception as e:
 			raise e
 	return redirect('controltributes:index')

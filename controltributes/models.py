@@ -121,4 +121,7 @@ class Payment(models.Model):
 			AND date >= '{}' And date <= '{}';
 		""".format(tribute_id, init_date, end_date)
 		return Payment.objects.raw(sql)
+
+	
+
 	
